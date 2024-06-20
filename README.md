@@ -1,4 +1,4 @@
-# notification-service
+# data-service
 
 ## Overview
 Lifecycle events are stored in Elasticsearch by realm; i.e., process data and indexes.
@@ -6,14 +6,11 @@ Lifecycle events are stored in Elasticsearch by realm; i.e., process data and in
 ## Ingestion
 Collects the events from data ingestion.
 
-## Distribution
-Collects all the events from distribution service. 
-
 ## Functional Tests
 Functional tests are only run for direction ingestion and not for async
 
 ## Local Development
-For ingestion, need to have the yoda ingestion services up and running:
+For ingestion, need to have the services up and running:
 - Config, Auth, Gateway, and Ingest
 - The data processor services need to be up and running
 
