@@ -1,0 +1,20 @@
+name: BlackDuck Scan
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main_stratosphere"
+
+concurrency:
+  group: ${{ github.head_ref }} || ${{ github.ref_name }}
+
+jobs:
+  black_duck_scan:
+    uses: BY-Product-Development/plat-jdp-streaming-github-actions/.github/workflows/blackduck-scan-workflow.yaml@main
+    with:
+      service_app: jdp-lifecycle-notification-service
+      build_path: build
+      blackduck_project: lumplatform-datasvcs-lifecycle-notification-service
+      java_distribution: temurin
+      java_version: 17
+    secrets: inherit

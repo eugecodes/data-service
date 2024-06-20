@@ -1,0 +1,87 @@
+# Default values for tenantauth.
+replicaCount: 1
+
+resourceGroupName: dd-serv
+
+image:
+  repository: a.azurecr.io/data-service
+  pullPolicy: Always
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 80
+
+global:
+  namespace: "app"
+  stratosphere_virtual_service: https://api.byp.ai
+
+  config:
+    server:
+      port: 15156
+
+  oauth:
+    dctSecret: "***"
+    jwtKey: "***"
+    
+  kafka:
+    bootstrapServers: "dd-serv.servicebus.windows.net:9093"
+    compressionCodec: "none"
+    securityProtocol: "SASL_SSL"
+    saslMechanism: "PLAIN"
+    saslJaasConfig: "connection_string"
+    acknowledge:
+      manual:
+        commit: true
+    consumer:
+      properties: max.poll.interval.ms:600000;fetch.max.wait.ms=10
+
+  enable:
+    kafka:
+      auto:
+        commit: false
+  ingestion:
+    all:
+      status: public.all.status
+  public:
+    egress:
+      status: public.dp.status
+ 
+  elasticsearch:
+    host: elasticsearch.cluster.local
+    port: 9200
+    protocol: "http"
+    username: elastic
+    password: "***"
+    readTimeout: 60000
+    connectionTimeout: 30000
+    maxConnectionIdleTime: 15000
+    
+  
+  retry:
+    elasticsearch:
+      maxAttempts: 3
+      retryWaitDuration: 1000
+  
+  circuitBreaker:
+    elasticsearch:
+      failureRateThreshold: 50
+      waitDurationInOpenState: 60000
+      permittedNumberOfCallsInHalfOpenState: 10
+      slidingWindowSize: 10
+
+hpa:
+  limits:
+    memory: "6144Mi"
+    cpu: "1000m"
+  requests:
+    memory: "2560Mi"
+    cpu: "500m"
+  minReplicas: 2
+  maxReplicas: 4
+  memory:
+    targetAverageUtilization: 85
+  cpu:
+    targetAverageUtilization: 70
+    
+javaopt: "-Xms1g -Xmx4g"

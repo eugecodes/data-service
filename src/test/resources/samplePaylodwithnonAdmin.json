@@ -1,0 +1,25 @@
+{
+  "authContext": {
+    "stackAdmin": false,
+    "tenantAdmin": true,
+    "currentTid": "t30f011232daea2f9",
+    "currentUser": "t30f011232daea2f9-d89d7ec77b3d286f",
+    "currentRoles": [
+      "TENANT_USER"
+    ],
+    "additionalProps": {}
+  },
+  "body": {
+    "ingestionId": "t30f011232daea2f9-dpingestion-20200803090751591-XpS1q",
+    "status": "QUEUED",
+    "description": "Upload has been queued for processing.",
+    "component": "lct",
+    "service": "application",
+    "eventTime" : "2020-09-15T07:17:57.105+0000",
+    "errors": [{
+      "errorMessage": "lct failed to process",
+      "entityId": "1234"
+    }]
+  }
+}
+

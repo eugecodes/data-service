@@ -1,0 +1,1 @@
+Package for DP lifecycle notification service k8s resources -- release {{ .Release.Name }}.

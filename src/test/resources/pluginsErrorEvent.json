@@ -1,0 +1,18 @@
+{
+
+  "component": "plugin",
+  "service": "sample plugins",
+  "status": "FAILED",
+  "eventTime": "2020-10-06T10:10:47.899+0000",
+  "description": "Human readable message",
+  "ingestionIds": [
+    "tid-dpingestion-timestamp-uniqeChars1",
+    "tid-dpingestion-timestamp-uniqeChars2",
+    "tid-dpingestion-timestamp-uniqeChars3"
+  ],
+
+  "errors": {
+    "errorMessage": "error describing system error"
+  }
+
+}

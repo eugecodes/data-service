@@ -1,0 +1,44 @@
+{
+  "authContext": {
+    "stackAdmin": "false",
+    "tenantAdmin": "false",
+    "identityContext": "null",
+    "currentTid": "null",
+    "currentUser": "null",
+    "currentRoles": "null",
+    "additionalProps": {}},
+  "body": {
+    "ingestionId": "56c92265-259e-46bf-b7c5-5dbbabdc28d8-Test",
+    "status": "ACCEPTED",
+    "eventTime": "2023-05-12 07:49:58",
+    "description": "Message received for transformation listener",
+    "component": "transformation",
+    "service": "distribution",
+    "detailed_info": {
+      "parent_messageid": "56c92265-259e-46bf-b7c5-5dbbabdc28d8-Test",
+      "entity": "STG_ITEM",
+      "resource": "items",
+      "messageid": ["56c92265-259e-46bf-b7c5-5dbbabdc28d8-Test"],
+      "realm_id": "730B00F6-D9E1-4594-9DD0-DA883C305124",
+      "messageHeader": {},
+      "ltdBatchInfo": {
+        "realm": "56C92265-259E-46BF-B7C5-5DBBABDC28D8",
+        "resource": "items",
+        "batchId": "56c92265-259e-46bf-b7c5-5dbbabdc28d8-Test",
+        "status": "DB Request Received"
+      },
+      "ltdMetadata": {
+        "sourceOrigin": "db_adaptor",
+        "realm": "56C92265-259E-46BF-B7C5-5DBBABDC28D8",
+        "resource": "items",
+        "entity": "sf_items",
+        "tabularData": false,
+        "sourceType": "blob",
+        "sourceName": "blob_batch_dms_2",
+        "batchId": "56c92265-259e-46bf-b7c5-5dbbabdc28d8-Test",
+        "sourceFileName": "sf_items_2023_02_12_105925691_1.parquet",
+        "date": "20230212_105930428830"
+      }
+    }
+  }
+}

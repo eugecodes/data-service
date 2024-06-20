@@ -1,0 +1,24 @@
+{
+  "authContext": {
+    "stackAdmin": false,
+    "tenantAdmin": true,
+    "currentTid": "t30f011232daea2f9",
+    "currentUser": "t30f011232daea2f9-d89d7ec77b3d286f",
+    "currentRoles": [
+      "TENANT_ADMIN"
+    ],
+    "additionalProps": {}
+  },
+  "body": {
+    "ingestionId": "t30f011232daea2f9-dpingestion-20200803090751591-XpS1q",
+    "status": "QUEUED",
+    "description": "Validation: request has been validated.",
+    "component": "dataprocessor",
+    "service": "validator",
+    "eventTime" : "2020-09-15 07:17:57",
+    "errors": [{
+        "errorMessage": "Validation failed for primaryId 399174a5-db2b-425c-afe0-jdptestsandbox01-98989898106. Error: $[0].documentStatusCode: does not have a value in the enumeration [ADDITIONAL_TRANSMISSION, COPY, ORIGINAL]",
+        "entityId" : "sample entityID"
+      }]
+  }
+}

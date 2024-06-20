@@ -1,0 +1,26 @@
+{
+  "authContext": {
+    "currentTid": "t30f011232daea2f9",
+    "currentUser": "t30f011232daea2f9-d89d7ec77b3d286f",
+    "currentRoles": ["TENANT_ADMIN"],
+    "additionalProps": {}
+  },
+  "body": {
+    "ingestionId": "a4b7a825f67930965747445709011120-dpingestion-20200917212207277-jM-dpsuccess",
+    "status": "COMPLETED_WITH_ERROR",
+    "eventTime": "2020-10-06T10:10:47.899+0000",
+    "description": "SCPO: application processing status update.",
+    "numProcessed": 3,
+    "numErrored": 2,
+    "component": "application",
+    "service": "SCPO",
+    "errors": [
+      {
+        "errorMessage": "$.item.itemId: Readable error"
+      },
+      {
+        "errorMessage": "$.item.itemId: Readable error"
+      }
+    ]
+  }
+}

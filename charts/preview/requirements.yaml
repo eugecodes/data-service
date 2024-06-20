@@ -1,0 +1,4 @@
+dependencies:
+  - alias: preview
+    name: data-service
+    repository: file://../data-service

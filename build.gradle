@@ -1,0 +1,342 @@
+plugins {
+    id "org.springframework.boot" version "3.1.1"
+    id "io.spring.dependency-management" version "1.1.0"
+    id 'java-library'
+    id 'groovy'
+    id 'application'
+    id 'jacoco'
+    id "com.jfrog.artifactory" version "4.32.0"
+    id 'checkstyle'
+    id "com.github.hierynomus.license" version "0.16.1"
+    id 'io.qameta.allure' version '2.8.1'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.by.dp.lifecycle.notification.app.NotificationApp'
+        )
+    }
+    archiveClassifier = "nodep"
+}
+
+bootJar {
+    archiveBaseName = 'jdp-lifecycle-notification-service'
+    archiveVersion =  "1.0.0"
+}
+
+description = "jdp-lifecycle-notification-service"
+group "com.by.dp"
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenLocal()
+    maven {
+        url "${artifactoryContextUrl}/jda-dev-repositories"
+        credentials {
+            username = "${artifactoryUsername}"
+            password = "${artifactoryPassword}"
+        }
+    }
+    maven {
+        url = "${artifactoryContextUrl}/jdaconnect-release-local"
+        credentials {
+            username = "${artifactoryUsername}"
+            password = "${artifactoryPassword}"
+        }
+    }
+    mavenCentral()
+}
+
+checkstyle {
+    toolVersion "10.3.3"
+    configFile file("${rootProject.projectDir}/config/checkstyle/by_checkstyle.xml")
+}
+
+configurations {
+    zip
+    all {
+        resolutionStrategy {
+            cacheChangingModulesFor 0, 'seconds'
+            preferProjectModules()
+        }
+    }
+}
+
+ext {
+    set('springCloudVersion', '2021.0.5')
+    set('spring-security.version', '6.0.3')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+}
+
+dependencies {
+    implementation "com.jda.jdp.common:jdp-common:1.0.9"
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.9.7'
+
+    //Add EC Logging Dependencies
+    runtimeOnly ('co.elastic.logging:logback-ecs-encoder:1.5.0')
+
+    // Kafka Common
+    implementation ('com.by.dp:kafka-common:1.0.9') {
+        exclude (group: 'org.apache.kafka', module: 'kafka-clients')
+    }
+
+    // Blackducks findings
+    implementation 'org.apache.kafka:kafka-clients:3.5.0'
+    implementation 'org.apache.kafka:kafka-streams-test-utils:3.4.0'
+    implementation 'org.apache.kafka:kafka-streams:3.4.0'
+    implementation 'org.apache.kafka:kafka-metadata:3.4.0'
+    implementation 'org.apache.kafka:kafka-server-common:3.4.0'
+    implementation 'org.apache.kafka:kafka-raft:3.4.0'
+    implementation 'org.apache.kafka:kafka_2.13:3.4.0'
+    implementation 'org.apache.kafka:kafka-storage:3.4.0'
+    implementation 'org.apache.kafka:kafka-storage-api:3.4.0'
+    implementation (group: 'org.apache.tika', name: 'tika-core') { version { strictly '2.8.0'}}
+    implementation ('org.apache.tika:tika-parsers') { version {strictly '2.8.0'}
+        exclude group: 'org.bouncycastle', module: 'bcmail-jdk15on'
+    }
+    implementation ('org.bouncycastle:bcmail-jdk18on') {version {strictly '1.74'}}
+    implementation ('org.bouncycastle:bcprov-jdk18on') {version {strictly '1.74'}}
+    implementation ('org.bouncycastle:bcpkix-jdk18on') {version {strictly '1.74'}}
+    implementation ('org.xerial.snappy:snappy-java') {version {strictly '1.1.10.1'}}
+    implementation ('org.apache.httpcomponents:httpclient') {version {strictly '4.5.14'}}
+    implementation ('com.google.guava:guava') {version {strictly '28.2-jre'}}
+
+    implementation ('net.minidev:json-smart') {version {strictly '2.4.11'}}
+    // end Blackduck findings
+
+    implementation ('com.by.dp:dp-services-common:1.3.102') {
+        exclude (group: 'com.azure', module: 'azure-storage-file-datalake')
+        exclude (group: 'org.springframework.kafka', module: 'spring-kafka')
+        exclude (group: 'com.jda.luminate')
+    }
+
+    implementation group: 'commons-io', name: 'commons-io', version: '2.13.0'
+    implementation 'org.json:json:20230618'
+    implementation group: 'net.minidev', name: 'json-smart', version: '2.4.11'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.1'
+
+    implementation group: 'ch.qos.logback.contrib', name: 'logback-json-classic', version: '0.1.5'
+    implementation group: 'ch.qos.logback.contrib', name: 'logback-jackson', version: '0.1.5'
+
+    implementation ('org.elasticsearch:elasticsearch') { version { strictly '7.17.5' } }
+    implementation ('org.elasticsearch.client:elasticsearch-rest-high-level-client') { version { strictly '7.17.5' } }
+    implementation ('org.yaml:snakeyaml') { version { strictly '2.0' } }
+
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+
+    implementation 'org.apache.groovy:groovy-all:4.0.10'
+
+    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.9.10'
+    testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: '2.1'
+    testImplementation group: 'org.spockframework', name: 'spock-core', version: '2.3-groovy-4.0'
+    testImplementation group: 'org.spockframework', name: 'spock-spring', version: '2.3-groovy-4.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation group: 'org.springframework.kafka', name: 'spring-kafka-test', version: '3.0.5'
+    testImplementation group: 'com.jda.testautomation', name: 'testcommons', version: '2.3'
+    testImplementation group: 'com.by.dp', name: 'functional-tests-common', version: '1.79'
+    testImplementation group: 'com.by.dp', name: 'plat-jdp-e2e-automation', version: '1.7.1'
+    testImplementation 'io.qameta.allure:allure-testng:2.22.1'
+    testImplementation 'io.qameta.allure:allure-gradle:2.8.1'
+
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+        // xml.destination = file("${buildDir}/reports/coverage/jacoco.xml")
+        html.destination file("${buildDir}/reports/coverage")
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        //enforce line coverage percentage
+        rule {
+            enabled = true
+            element = 'CLASS'
+            excludes = ['com.by.dp.lifecycle.notification.app.NotificationApp','com.by.dp.lifecycle.notification.repositories.ElasticsearchClient']
+            limit {
+                counter = 'LINE'
+                minimum = 0.90
+            }
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+    finalizedBy jacocoTestCoverageVerification
+}
+
+
+task unzip {
+    doLast {
+        println "Dependencies:"
+        configurations.zip.each {
+            println it
+            def zipFile = file(it)
+            def outputDir = file("${buildDir}")
+            copy {
+                from zipTree(zipFile)
+                into outputDir
+            }
+        }
+    }
+}
+
+task pathingJar(type: Jar) {
+    dependsOn configurations.runtimeClasspath
+    archiveAppendix = 'pathing'
+
+    doFirst {
+        manifest {
+            attributes "Main-Class": "com.by.dp.lifecycle.notification.app.NotificationApp"
+            attributes "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
+        }
+    }
+}
+
+tasks.withType(Copy).all {
+    duplicatesStrategy 'exclude'
+}
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from configurations.runtimeClasspath
+}
+
+sourceSets {
+    test {
+        java {
+            srcDirs('src/integrationtest/groovy')
+        }
+        resources {
+            srcDirs('src/integrationtest/resources')
+        }
+    }
+    functionalTest {
+        java {
+            compileClasspath += project.configurations.testCompileClasspath + sourceSets.main.output
+            runtimeClasspath += project.configurations.testRuntimeClasspath + sourceSets.main.output
+            srcDirs('src/functionalTest/java')
+        }
+        resources {
+            srcDirs('src/functionalTest/resources')
+        }
+    }
+}
+
+configurations {
+    testCompile.extendsFrom implementation
+    testRuntime.extendsFrom runtimeOnly
+    functionalTestCompile.extendsFrom(testImplementation)
+    functionalTestRuntime.extendsFrom(testRuntimeOnly)
+}
+
+
+bootRun {
+    systemProperties = System.properties
+    systemProperty 'spring.profiles.active', 'development'
+    jvmArgs('-Djava.util.logging.config.file=none')
+    mainClassName = "com.by.dp.lifecycle.notification.app.NotificationApp"
+    dependsOn pathingJar
+    dependsOn copyToLib
+    doFirst {
+        classpath = files("$buildDir/classes/java/main", "$buildDir/resources/main", pathingJar.archivePath)
+    }
+}
+
+test {
+    systemProperties = System.properties
+    systemProperty 'spring.profiles.active', 'development'
+    jvmArgs('-Djava.util.logging.config.file=none')
+}
+
+license {
+    ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    includes(["**/*.java", "**/*.groovy"])
+    skipExistingHeaders true
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+        groovy = 'SLASHSTAR_STYLE'
+    }
+}
+
+task functionalTest(type: Test) {
+
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+    
+    systemProperty ("allure.results.directory", "${project.buildDir}/allure-results")
+    systemProperty ("usedefaultlisteners", false)
+    System.getProperty("automation.jdp.url")?.trim() ? systemProperty("automation.jdp.url", System.getProperty("automation.jdp.url")) : ""
+    System.getProperty("automation.jdp.credentials")?.trim() ? systemProperty("automation.jdp.credentials", System.getProperty("automation.jdp.credentials")) : ""
+    System.getProperty("automation.jdp.gateway.url")?.trim() ? systemProperty("automation.jdp.gateway.url", System.getProperty("automation.jdp.gateway.url")) : ""
+    System.getProperty("automation.jdp.auth.url")?.trim() ? systemProperty("automation.jdp.auth.url", System.getProperty("automation.jdp.auth.url")) : ""
+    System.getProperty("automation.jdp.ingestion.status.retry")?.trim() ? systemProperty("automation.jdp.ingestion.status.retry", System.getProperty("automation.jdp.ingestion.status.retry")) : ""
+    System.getProperty("automation.jdp.retry.count")?.trim() ? systemProperty("automation.jdp.retry.count", System.getProperty("automation.jdp.retry.count")) : ""
+    System.getProperty("bootstrap.servers")?.trim() ? systemProperty("bootstrap.servers", System.getProperty("bootstrap.servers")) : ""
+    System.getProperty("sasl.jaas.config")?.trim() ? systemProperty("sasl.jaas.config", System.getProperty("sasl.jaas.config").replaceAll("\\\\", "")) : ""
+
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+    maxParallelForks 4
+    forkEvery 1
+
+    useTestNG() {
+        listeners << 'com.jda.testautomation.common.listener.RetryListener'
+        switch (System.getProperty("group")) {
+            case "dev":
+                println("running tests in development")
+                includeGroups 'dev'
+                break
+            case "smoke":
+                println("running Smoke Tests")
+                includeGroups 'smoke'
+                break
+            case "acceptance":
+                println("running Acceptance Tests")
+                includeGroups 'acceptance'
+                break
+            case "regression":
+                println("running Regression Tests")
+                includeGroups 'regression'
+                break
+        }
+    }
+}
+allure {
+    aspectjweaver = true
+    autoconfigure = true
+    version "2.8.1"
+    resultsDir = file("${project.buildDir}/allure-results")
+    reportDir = file("${project.buildDir}/allure-report")
+}
+
+classes.dependsOn(licenseFormat)
+
+bootJar.dependsOn unzip
+jar.enabled = true

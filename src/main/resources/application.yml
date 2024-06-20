@@ -1,0 +1,107 @@
+spring:
+  application:
+    name: jdp-lifecycle-notification-service
+  profiles:
+    active: production
+  cloud:
+    config:
+      enabled: false
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  security:
+    enabled: false
+  health:
+    elasticsearch:
+      enabled: false
+    db:
+      enabled: false
+  info:
+    java:
+      enabled: true
+    build:
+      enabled: true
+
+endpoints:
+  health:
+    sensitive: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+
+#end of production profile.
+---
+spring:
+  config:
+    activate:
+      on-profile: development
+
+server:
+  port: 15156
+  compression:
+    enabled: true
+    mime-types: application/json
+
+enable:
+  kafka:
+    auto:
+      commit: false
+
+ingestion:
+  all:
+    status: public.all.ingestion.status
+
+public:
+  egress:
+    status: public.dp.egress.status
+
+jest:
+  elasticsearch:
+    host: localhost
+    port: 9200
+    username: elastic
+    password: Password
+    readTimeout: 20000
+    connectionTimeout: 20000
+    maxConnectionIdleTime: 15000
+
+
+circuitBreaker:
+  elasticsearch:
+    failureRateThreshold: 50
+    waitDurationInOpenState: 60000
+    permittedNumberOfCallsInHalfOpenState: 10
+    slidingWindowSize: 10
+retry:
+  elasticsearch:
+    maxAttempts: 3
+    retryWaitDuration: 1000
+
+kafka:
+  bootstrap:
+    servers: localhost:19092
+  acknowledge:
+    manual:
+      commit: true
+  consumer:
+    properties: max.poll.interval.ms=600000;fetch.max.wait.ms=10
+  replying:
+    template:
+      enabled: true
+#end of development profile.

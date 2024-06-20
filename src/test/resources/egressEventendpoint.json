@@ -1,0 +1,19 @@
+{
+
+  "component": "plugin",
+  "service": "sample plugins",
+  "status": "COMPLETED",
+  "eventTime": "2020-10-06T10:10:47.899+0000",
+  "description": "Human readable message",
+  "ingestionIds": [
+    "tid-dpingestion-timestamp-uniqeCharsA",
+    "tid-dpingestion-timestamp-uniqeCharsB",
+    "tid-dpingestion-timestamp-uniqeCharsC"
+  ],
+
+  "endpoint": {
+    "id": "bmw1",
+    "description": "messge procssing failed"
+  }
+
+}

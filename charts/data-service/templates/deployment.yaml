@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "lifecyclenotificationservice.fullname" . }}
+  labels:
+    app: {{ template "lifecyclenotificationservice.name" . }}
+    chart: {{ template "lifecyclenotificationservice.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  revisionHistoryLimit: 1
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "lifecyclenotificationservice.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "lifecyclenotificationservice.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        co.elastic.logs.jdp-lifecycle-notification-service/json.add_error_key: "true"
+        co.elastic.logs.jdp-lifecycle-notification-service/json.keys_under_root: "true"
+        co.elastic.logs.jdp-lifecycle-notification-service/json.message_key: "message"
+        co.elastic.metrics/hosts: ${data.host}:15156
+        co.elastic.metrics/metrics_path: /actuator/prometheus
+        co.elastic.metrics/module: prometheus
+        co.elastic.metrics/period: 30s
+        co.elastic.metrics/timeout: 30s
+    spec:
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ template "fully.qualified.image" . }}
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 15156
+            initialDelaySeconds: 120
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 15156
+            initialDelaySeconds: 120
+            periodSeconds: 10
+          resources:
+            limits:
+              memory: {{ .Values.hpa.limits.memory | quote }}
+              cpu: {{ .Values.hpa.limits.cpu | quote }}
+            requests:
+              memory: {{ .Values.hpa.requests.memory | quote }}
+              cpu: {{ .Values.hpa.requests.cpu | quote }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+          env:
+            - name: OTEL_SERVICE_NAME
+              value: '{{ template "lifecyclenotificationservice.name" . }}-{{ .Values.global.namespace }}'
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  key: elastic_apm_server_url
+                  name: elastic-apm
+            - name: OTEL_EXPORTER_OTLP_HEADERS
+              valueFrom:
+                secretKeyRef:
+                  key: elastic_otel_secret_header
+                  name: elastic-apm
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: kubernetes.namespace={{ .Values.global.namespace }},kubernetes.container.name={{ template "lifecyclenotificationservice.name" . }}
+            - name: JAVA_OPTIONS
+              value: {{ .Values.javaopt | quote }}
+            - name: SERVER_PORT
+              value: {{ .Values.global.config.server.port | quote }}
+            - name: DCT_OAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jdp-lifecycle-notification-service-oauth-secret
+                  key: dctSecret
+            - name: OAUTH2_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jdp-lifecycle-notification-service-oauth-secret
+                  key: jwtKey
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: {{ .Values.global.kafka.bootstrapServers | quote }}
+            - name: KAFKA_COMPRESSION_CODEC
+              value: {{ .Values.global.kafka.compressionCodec | quote }}
+            - name: KAFKA_SECURITY_PROTOCOL
+              value: {{ .Values.global.kafka.securityProtocol | quote }}
+            - name: KAFKA_SASL_MECHANISM
+              value: {{ .Values.global.kafka.saslMechanism | quote }}
+            - name: KAFKA_SASL_JAAS_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: jdp-lifecycle-notification-service-kafka-sasl-jaas-config-secret
+                  key: saslJaasConfig
+            - name: KAFKA_ACKNOWLEDGE_MANUAL_COMMIT
+              value: {{ .Values.global.kafka.acknowledge.manual.commit | quote }}
+            - name: ENABLE_KAFKA_AUTO_COMMIT
+              value: {{ .Values.global.enable.kafka.auto.commit | quote }}
+            - name: KAFKA_CONSUMER_PROPERTIES
+              value: {{ .Values.global.kafka.consumer.properties | quote }}
+            - name: INGESTION_ALL_STATUS
+              value: {{ .Values.global.ingestion.all.status | quote }}
+            - name: PUBLIC_EGRESS_STATUS
+              value: {{ .Values.global.public.egress.status | quote }}
+            - name: JEST_ELASTICSEARCH_HOST
+              value: {{ .Values.global.elasticsearch.host | quote }}
+            - name: JEST_ELASTICSEARCH_PORT
+              value: {{ .Values.global.elasticsearch.port | quote}}
+            - name: JEST_ELASTICSEARCH_PROTOCOL
+              value: {{ .Values.global.elasticsearch.protocol | default "http" | quote }}  
+            - name: JEST_ELASTICSEARCH_USERNAME
+              value: {{ .Values.global.elasticsearch.username | quote }}
+            - name: JEST_ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jdp-lifecycle-notification-service-elasticsearch-secret
+                  key: elasticPassword
+            - name: JEST_ELASTICSEARCH_READTIMEOUT
+              value: {{ .Values.global.elasticsearch.readTimeout | quote }}
+            - name: JEST_ELASTICSEARCH_CONNECTIONTIMEOUT
+              value: {{ .Values.global.elasticsearch.connectionTimeout | quote }}
+            - name: JEST_ELASTICSEARCH_MAXCONNECTIONIDLETIME
+              value: {{ .Values.global.elasticsearch.maxConnectionIdleTime | quote }}
+            - name: SPRING_ELASTICSEARCH_JEST_URIS
+              value: "$(JEST_ELASTICSEARCH_PROTOCOL)://$(JEST_ELASTICSEARCH_HOST):$(JEST_ELASTICSEARCH_PORT)"
+            - name: CIRCUITBREAKER_ELASTICSEARCH_FAILURERATETHRESHOLD
+              value: {{ .Values.global.circuitBreaker.elasticsearch.failureRateThreshold | quote }}
+            - name: CIRCUITBREAKER_ELASTICSEARCH_WAITDURATIONINOPENSTATE
+              value: {{ .Values.global.circuitBreaker.elasticsearch.waitDurationInOpenState | quote }}
+            - name: CIRCUITBREAKER_ELASTICSEARCH_PERMITTEDNUMBEROFCALLSINHALFOPENSTATE
+              value: {{ .Values.global.circuitBreaker.elasticsearch.permittedNumberOfCallsInHalfOpenState | quote }}
+            - name: CIRCUITBREAKER_ELASTICSEARCH_SLIDINGWINDOWSIZE
+              value: {{ .Values.global.circuitBreaker.elasticsearch.slidingWindowSize | quote }}
+            - name: RETRY_ELASTICSEARCH_MAXATTEMPTS
+              value: {{ .Values.global.retry.elasticsearch.maxAttempts | quote }}
+            - name: RETRY_ELASTICSEARCH_RETRYWAITDURATION
+              value: {{ .Values.global.retry.elasticsearch.retryWaitDuration | quote }}
+          ports:
+            - name: http
+              containerPort: 15156
+              protocol: TCP

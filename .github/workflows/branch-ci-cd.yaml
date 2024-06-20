@@ -1,0 +1,25 @@
+name: Stratosphere SBX
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - "main_stratosphere"
+      - "devops/**"
+
+concurrency:
+  group: ${{ github.head_ref }} || ${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  sbx_workflow:
+    uses: BY-Product-Development/plat-jdp-streaming-github-actions/.github/workflows/stratosphere-branch-workflow.yaml@main
+    with:
+      service_app: jdp-lifecycle-notification-service
+      build_path: build
+      dockerfile_path: .
+      docker_context: .
+      use_elastic: true
+      use_kafka: true
+      java_distribution: temurin
+      java_version: 17
+    secrets: inherit

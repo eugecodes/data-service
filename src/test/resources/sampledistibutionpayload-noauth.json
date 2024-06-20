@@ -1,0 +1,38 @@
+{
+  "authContext": {
+    "stackAdmin": "false",
+    "tenantAdmin": "false",
+    "identityContext": "null",
+    "currentTid": "null",
+    "currentUser": "null",
+    "currentRoles": "null",
+    "additionalProps": {}
+  },
+  "body": {
+    "status": "PROCESSING",
+    "eventTime": "2023-05-05 08:24:43",
+    "description": "Data read from source in batches",
+    "component": "db_adaptor",
+    "service": "distribution",
+    "detailed_info": {
+      "realm_id": "730B00F6-D9E1-4594-9DD0-DA883C305124",
+      "template_group": "catman_items_blob_sf",
+      "run_id": "77739f52-ecc6-4323-92e4-d9e1591adcc8",
+      "service": [
+        "LTD-Distribution-Event-catman_items_blob_sf"
+      ],
+      "job_name": [
+        "ltdsv-constant"
+      ],
+      "ltdBatchInfo": {
+        "realm": "730B00F6-D9E1-4594-9DD0-DA883C305124",
+        "resource": "catman_items_blob_sf",
+        "batchId": "77739f52-ecc6-4323-92e4-d9e1591adcc8",
+        "batch_count": null,
+        "batch_number": null,
+        "status": "DB Request Received"
+      }
+    },
+    "run_id": "77739f52-ecc6-4323-92e4-d9e1591adcc8"
+  }
+}

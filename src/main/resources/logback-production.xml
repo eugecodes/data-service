@@ -1,0 +1,9 @@
+<configuration>
+    <include resource="co/elastic/logging/logback/boot/ecs-console-appender.xml" />
+    <springProfile name="production">
+        <root level="INFO">
+            <include resource="logback-production.xml"/>
+            <appender-ref ref="ECS_JSON_CONSOLE"/>
+        </root>
+    </springProfile>
+</configuration>

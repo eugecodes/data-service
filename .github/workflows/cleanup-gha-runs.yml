@@ -1,0 +1,21 @@
+name: Cleanup old GHA rns
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/cleanup_gha_runs.yml'
+  schedule:
+    - cron: '23 21 * * *'
+jobs:
+  delete-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup Workflow Logs
+        uses: BY-Product-Development/ds-github-actions/by-delete-github-runs@master
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          keep_minimum_runs: 10
+          retain_days: 5

@@ -1,0 +1,55 @@
+name: Functional Test workflow
+# This workflow will run with a cron schedule and can be manually triggered. 
+# At the end of the workflow, the result is reported in Teams channel:
+# - Functional Tests Nightly Build -
+
+on:
+ schedule:
+  - cron: '30 22 * * *' # “At 22:30. ”
+ workflow_dispatch:  # Allows you to run this workflow manually from the Actions tab
+  inputs:
+      environment:
+        description: sandbox, dev, test, staging
+        default: sandbox
+        type: environment
+        required: true
+      stratosphere_stage: # Staging or Live
+        description: staging
+        default: staging
+        required: true
+      stratosphere_project: # As shown on Stratosphere Console
+        description: name
+        default: jdp-by-sbx
+        required: true
+
+jobs:
+  environment_setup:
+    name: Setup Dynamic Environment Variables
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.setup.outputs.environment }}
+      stratosphere_stage: ${{ steps.setup.outputs.stratosphere_stage }}
+      stratosphere_project: ${{ steps.setup.outputs.stratosphere_project }}
+    steps:
+      # This step is neccesary to allow workflow dispatch to accept inputs and cron job to run with default values.
+      # If this is not implemented then the reusable workflow will not receive the values
+      - name: Set the output variables
+        id: setup
+        run: |    
+          # If workflow_dispatch, use inputs (left), if other trigger, use default env (right)
+          echo "::set-output name=environment::${{ github.event.inputs.environment || 'test' }}"
+          echo "::set-output name=stratosphere_stage::${{ github.event.inputs.stratosphere_stage || 'staging' }}"
+          echo "::set-output name=stratosphere_project::${{ github.event.inputs.stratosphere_project || 'jdp-by-test' }}"
+
+  scheduled_tests:
+    needs:
+      environment_setup
+    uses: BY-Product-Development/plat-jdp-streaming-github-actions/.github/workflows/schedule_functional_tests_regression.yaml@main
+    with:
+      environment: ${{needs.environment_setup.outputs.environment}} 
+      stratosphere_stage: ${{needs.environment_setup.outputs.stratosphere_stage}} 
+      stratosphere_project: ${{needs.environment_setup.outputs.stratosphere_project}}
+      key_vault_umm: kv-dp-umm
+      key_vault: kv-jdp-jda-support-01
+      github-pages-cname: studious-memory-539db2af  # This is generated from the GH pages deployment
+    secrets: inherit

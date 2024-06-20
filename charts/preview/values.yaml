@@ -1,0 +1,34 @@
+preview:
+  image:
+    repository:
+    tag:
+    pullPolicy: IfNotPresent
+  service:
+    name: data-service
+
+dp-ingestion-lifecycle-service:
+  springProfilesActive: production
+  service:
+    name: data-service
+    annotations:
+      service.beta.kubernetes.io/azure-load-balancer-internal: "false"
+  resources:
+    limits:
+      memory: 0
+    requests:
+      memory: 0
+
+
+
+
+
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 2
+  memory:
+    targetAverageUtilization: 85
+  cpu:
+    targetAverageUtilization: 70
+
+    

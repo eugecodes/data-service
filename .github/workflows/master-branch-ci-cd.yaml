@@ -1,0 +1,19 @@
+name: Stratosphere Test
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main_stratosphere"
+
+jobs:
+  test_workflow:
+    uses: BY-Product-Development/plat-jdp-streaming-github-actions/.github/workflows/stratosphere-test-workflow.yaml@main
+    with:
+      service_app: jdp-lifecycle-notification-service
+      build_path: build
+      blackduck_project: lumplatform-datasvcs-lifecycle-notification-service
+      docker_context: .
+      dockerfile_path: .
+      java_distribution: temurin
+      java_version: 17
+    secrets: inherit

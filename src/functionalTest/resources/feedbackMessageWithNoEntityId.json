@@ -1,0 +1,24 @@
+{
+  "ingestionId": "t30f011232daea2f9-dpingestion-20210818174704927-0oba4",
+  "entityType": "item",
+  "tenantId": "t30f011232daea2f9",
+  "component": "application",
+  "service": "LCT.GLOBAL",
+  "status": "ERROR",
+  "item": [
+    {
+      "dataPlatformId": "item123",
+      "status": "COMPLETED_WITH_ERROR",
+      "eventTime": "2021-08-18T05:38:25.173Z",
+      "description": "ERROR",
+      "errors": [
+        {
+          "errorMessage": "$.item.itemId: Readable error"
+        },
+        {
+          "errorMessage": "$.item.itemId: Readable error"
+        }
+      ]
+    }
+  ]
+}

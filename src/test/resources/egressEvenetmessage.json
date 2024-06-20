@@ -1,0 +1,10 @@
+{
+  "component": "plugin",
+  "service": "plugin Name",
+  "status": "ACCEPTING",
+  "eventTime": "Event Time when plug in completed action in hand",
+  "description": "Human readable message",
+  "ingestionIds": [
+    "tid-dpingestion-timestamp-uniqeChars"
+  ]
+}

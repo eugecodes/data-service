@@ -1,0 +1,25 @@
+name: Stratosphere DEV
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: 
+      -  "main_stratosphere" 
+
+concurrency:
+  group: ${{ github.head_ref }} || ${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  dev_workflow:
+    uses: BY-Product-Development/plat-jdp-streaming-github-actions/.github/workflows/stratosphere-pr-workflow.yaml@main
+    with:
+      service_app: jdp-lifecycle-notification-service
+      blackduck_project: lumplatform-datasvcs-lifecycle-notification-service
+      build_path: build
+      docker_context: .
+      dockerfile_path: .
+      use_elastic: true
+      use_kafka: true
+      java_distribution: temurin
+      java_version: 17
+    secrets: inherit

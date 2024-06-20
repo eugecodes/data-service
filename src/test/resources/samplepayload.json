@@ -1,0 +1,21 @@
+{
+  "authContext": {
+    "stackAdmin": false,
+    "tenantAdmin": false,
+    "currentTid": "t30f011232daea2f9",
+    "currentUser": "t30f011232daea2f9-d89d7ec77b3d286f",
+    "currentRoles": [
+      "TENANT_ADMIN"
+    ],
+    "additionalProps": {}
+  },
+  "body": {
+    "ingestionId": "t30f011232daea2f9-dpingestion-20200803090751591-XpS1q",
+    "status": "QUEUED",
+    "description": "Upload has been queued for processing.",
+    "component": "dct",
+    "service": "ingest",
+    "eventTime" : "2020-09-15T07:17:57.105+0000"
+  }
+}
+

@@ -1,0 +1,10 @@
+{
+  "component": "plugin",
+  "service": "sample Name",
+  "status": "ACCEPTING",
+  "eventTime": "2020-10-06T10:10:47.899+0000",
+  "description": "Human readable message",
+  "ingestionIds": [
+    "tid-dpingestion-timestamp-uniqeChars"
+  ]
+}

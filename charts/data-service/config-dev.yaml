@@ -1,0 +1,33 @@
+resourceGroupName: dev-01
+global:
+  namespace: "app-dev"
+  stratosphere_virtual_service: https://byp.ai
+  kafka:
+    bootstrapServers: "ev.windows.net:9093"
+    compressionCodec: "none"
+    securityProtocol: "SASL_SSL"
+    saslMechanism: "PLAIN"
+    saslJaasConfig: "connection_string"
+    acknowledge:
+      manual:
+        commit: true
+  enable:
+    kafka:
+      auto:
+        commit: false
+  ingestion:
+    all:
+      status: public.all.ingestion.status
+  public:
+    egress:
+      status: public.dp.egress.status
+    
+  elasticsearch:
+    host: elasticsearch.cluster.local
+    port: 9200
+    protocol: "http"
+    username: elastic
+    password: "***"
+    readTimeout: 60000
+    connectionTimeout: 30000
+    maxConnectionIdleTime: 15000
